@@ -1,5 +1,14 @@
 window.App = (() => {
   const qs = selector => document.querySelector(selector);
+  const jiraConnectedKey = 'testflow:jiraConnected';
+
+  function isJiraConnected() {
+    return sessionStorage.getItem(jiraConnectedKey) === 'true';
+  }
+
+  function setJiraConnected(value) {
+    sessionStorage.setItem(jiraConnectedKey, value ? 'true' : 'false');
+  }
 
   function table(headers, rows) {
     return `
@@ -212,7 +221,12 @@ window.App = (() => {
   function bindGlobalActions() {
     window.addEventListener('message', event => {
       if (event.data?.type === 'testflow:jira-authorized') {
+        setJiraConnected(true);
         showToast('Jira authorization completed.');
+        if (document.body.dataset.page === 'dashboard') {
+          Layout.renderShell('dashboard');
+          renderDashboard();
+        }
       }
     });
 
@@ -223,6 +237,11 @@ window.App = (() => {
       if (action === 'create-project') openProjectModal();
       if (action === 'sync') fakeLoading(() => showToast('Mock sync completed.'));
       if (action === 'import-spec') showToast('API spec imported for demo.');
+      if (action === 'manage-connection') showToast('Connection settings are demo-only.');
+      if (action === 'disconnect') showToast('Jira disconnected for demo.');
+      if (action === 'save-settings') showToast('Settings saved for demo.');
+      if (action === 'archive-workspace') showToast('Workspace archived for demo.');
+      if (action === 'delete-workspace') showToast('Workspace deleted for demo.');
     });
 
     qs('#modalBackdrop')?.addEventListener('click', event => {
@@ -237,6 +256,8 @@ window.App = (() => {
     badge,
     openJiraModal,
     openJiraAuthPopup,
+    isJiraConnected,
+    setJiraConnected,
     showToast,
     fakeLoading,
     bindGlobalActions

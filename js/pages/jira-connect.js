@@ -79,7 +79,7 @@ function renderAtlassianAuthorization() {
   App.qs('#acceptAuthBtn')?.addEventListener('click', () => {
     App.fakeLoading(() => {
       if (window.opener && !window.opener.closed) {
-        window.opener.postMessage({ type: 'testflow:jira-authorized' }, window.location.origin);
+        window.opener.postMessage({ type: 'testflow:jira-authorized' }, '*');
       }
       window.close();
       App.showToast('Atlassian authorization accepted for demo.');

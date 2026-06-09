@@ -1,6 +1,16 @@
 window.Layout = (() => {
   function renderShell(activePage) {
     const active = MockData.navItems.find(item => item.id === activePage) || MockData.navItems[0];
+    const topbarTitle = ['dashboard', 'workspaces', 'integrations', 'settings'].includes(activePage)
+      ? MockData.workspace.name
+      : active.label;
+    const activeSubtitle = activePage === 'dashboard' && App.isJiraConnected()
+      ? 'Workspace overview'
+      : activePage === 'workspaces'
+        ? 'Projects'
+      : ['integrations', 'settings'].includes(activePage)
+        ? active.label
+      : active.subtitle;
     const sidebar = document.querySelector('#sidebar');
     const topbar = document.querySelector('#topbar');
 
@@ -52,8 +62,8 @@ window.Layout = (() => {
             <i class="fa-solid fa-bars"></i>
           </button>
           <div class="min-w-0">
-            <h1 class="truncate text-2xl font-extrabold text-ink">${activePage === 'dashboard' ? MockData.workspace.name : active.label}</h1>
-            <p class="truncate text-sm text-slate-500">${active.subtitle}</p>
+            <h1 class="truncate text-2xl font-extrabold text-ink">${topbarTitle}</h1>
+            <p class="truncate text-sm text-slate-500">${activeSubtitle}</p>
           </div>
         </div>
 
