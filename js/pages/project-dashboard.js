@@ -66,6 +66,53 @@ function activityRow(icon, bgClass, textClass, title, text, time, failed = false
   `;
 }
 
+function passFailTrendChart() {
+  const passed = [15, 18, 16, 16, 21, 23, 21, 23, 21, 21, 18, 23, 27];
+  const failed = [3, 2, 3, 8, 4, 8, 10, 8, 4, 4, 8, 10, 10];
+  const labels = ['May 3', '', '', 'May 6', '', '', 'May 9', '', '', 'May 12', '', 'May 15', 'May 17'];
+  const width = 520;
+  const height = 190;
+  const padding = { top: 16, right: 16, bottom: 34, left: 42 };
+  const chartWidth = width - padding.left - padding.right;
+  const chartHeight = height - padding.top - padding.bottom;
+  const maxValue = 30;
+  const x = index => padding.left + (chartWidth / (passed.length - 1)) * index;
+  const y = value => padding.top + chartHeight - (value / maxValue) * chartHeight;
+  const points = values => values.map((value, index) => `${x(index)},${y(value)}`).join(' ');
+  const area = `${padding.left},${padding.top + chartHeight} ${points(passed)} ${padding.left + chartWidth},${padding.top + chartHeight}`;
+
+  return `
+    <div class="mt-5 overflow-hidden rounded-lg bg-gradient-to-b from-emerald-50/70 to-white px-3 py-3">
+      <svg class="h-48 w-full" viewBox="0 0 ${width} ${height}" role="img" aria-label="Pass and fail trend for the last 14 days">
+        <defs>
+          <linearGradient id="passTrendFill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#10b981" stop-opacity="0.18"></stop>
+            <stop offset="100%" stop-color="#10b981" stop-opacity="0"></stop>
+          </linearGradient>
+        </defs>
+        ${[0, 10, 20, 30].map(value => `
+          <g>
+            <line x1="${padding.left}" y1="${y(value)}" x2="${padding.left + chartWidth}" y2="${y(value)}" stroke="#e2e8f0" stroke-width="1"></line>
+            <text x="18" y="${y(value) + 4}" fill="#64748b" font-size="12" font-weight="600">${value}</text>
+          </g>
+        `).join('')}
+        <polygon points="${area}" fill="url(#passTrendFill)"></polygon>
+        <polyline points="${points(passed)}" fill="none" stroke="#10a66a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        <polyline points="${points(failed)}" fill="none" stroke="#ef4444" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        ${passed.map((value, index) => `
+          <circle cx="${x(index)}" cy="${y(value)}" r="4" fill="#10a66a" stroke="white" stroke-width="2"></circle>
+        `).join('')}
+        ${failed.map((value, index) => `
+          <circle cx="${x(index)}" cy="${y(value)}" r="4" fill="#ef4444" stroke="white" stroke-width="2"></circle>
+        `).join('')}
+        ${labels.map((label, index) => label ? `
+          <text x="${x(index)}" y="${height - 8}" fill="#64748b" font-size="12" font-weight="700" text-anchor="middle">${label}</text>
+        ` : '').join('')}
+      </svg>
+    </div>
+  `;
+}
+
 function renderProjectDashboard() {
   App.qs('#pageContent').innerHTML = `
     <section class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
@@ -117,16 +164,7 @@ function renderProjectDashboard() {
           <h2 class="font-extrabold text-ink">Pass / Fail Trend <i class="fa-regular fa-circle-question text-slate-400"></i></h2>
           <button class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-ink">Last 14 Days <i class="fa-solid fa-chevron-down text-xs"></i></button>
         </div>
-        <div class="mt-6 h-40 rounded-lg border border-slate-100 bg-gradient-to-b from-emerald-50 to-white p-4">
-          <div class="flex h-full items-end gap-3">
-            ${[58, 70, 64, 63, 78, 86, 79, 84, 80, 79, 70, 86, 96].map((height, index) => `
-              <div class="flex flex-1 flex-col items-center gap-2">
-                <span class="w-full rounded-t bg-emerald-500" style="height:${height}%"></span>
-                <span class="w-full rounded-t bg-red-400" style="height:${Math.max(16, 56 - height / 2)}%"></span>
-              </div>
-            `).join('')}
-          </div>
-        </div>
+        ${passFailTrendChart()}
         <div class="mt-4 flex justify-center gap-8 text-sm">
           <span><i class="fa-solid fa-circle text-emerald-500"></i> Passed 118</span>
           <span><i class="fa-solid fa-circle text-red-500"></i> Failed 27</span>
