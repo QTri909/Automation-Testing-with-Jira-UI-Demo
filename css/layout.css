@@ -32,3 +32,38 @@
   border-radius: 10px;
   font-size: 22px;
 }
+
+.project-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  border-radius: 0.65rem;
+  padding: 0.88rem 1rem;
+  color: #18213f;
+  font-weight: 650;
+  transition: 160ms ease;
+}
+
+.project-nav-item:hover {
+  color: var(--brand);
+  background: #f4f8ff;
+}
+
+.project-nav-item.active {
+  color: #1757df;
+  background: #edf4ff;
+}
+
+.project-nav-item i {
+  width: 1.15rem;
+  text-align: center;
+  font-size: 1.08rem;
+}
+
+.code-editor {
+  background: #111820;
+  color: #d9e7f1;
+  font-family: "Cascadia Code", "Consolas", monospace;
+  line-height: 1.7;
+}

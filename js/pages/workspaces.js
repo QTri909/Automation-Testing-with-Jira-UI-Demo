@@ -64,9 +64,9 @@ function projectCard(project) {
       </dl>
 
       <div class="mt-7 grid grid-cols-[1fr_auto] gap-3">
-        <button class="rounded-lg border border-slate-200 bg-white px-4 py-3 font-bold text-brand-600 hover:border-brand-200 hover:bg-brand-50">
+        <a href="project-dashboard.html" class="rounded-lg border border-slate-200 bg-white px-4 py-3 text-center font-bold text-brand-600 hover:border-brand-200 hover:bg-brand-50">
           Open Project
-        </button>
+        </a>
         <button class="grid h-12 w-14 place-items-center rounded-lg border border-slate-200 text-ink hover:border-brand-200 hover:bg-brand-50" aria-label="Project actions">
           <i class="fa-solid fa-ellipsis"></i>
         </button>

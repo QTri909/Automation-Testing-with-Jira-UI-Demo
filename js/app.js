@@ -242,6 +242,33 @@ window.App = (() => {
       if (action === 'save-settings') showToast('Settings saved for demo.');
       if (action === 'archive-workspace') showToast('Workspace archived for demo.');
       if (action === 'delete-workspace') showToast('Workspace deleted for demo.');
+      if (action === 'generate-tests') showToast('Tests generated for demo.');
+      if (action === 'mapping-settings') showToast('Mapping settings opened for demo.');
+      if (action === 'generate-coverage') showToast('Missing coverage generated for demo.');
+      if (action === 'edit-ac') showToast('Acceptance criteria edit opened for demo.');
+      if (action === 'create-test-case') showToast('Test case creation opened for demo.');
+      if (action === 'edit-test-case') showToast('Test case editor opened for demo.');
+      if (action === 'approve-test-case') showToast('Test case approved for demo.');
+      if (action === 'generate-script') showToast('Script generated for demo.');
+      if (action === 'add-to-suite') showToast('Test case added to suite for demo.');
+      if (action === 'create-suite') showToast('Suite creation opened for demo.');
+      if (action === 'edit-suite') showToast('Suite editor opened for demo.');
+      if (action === 'run-suite') showToast('Test suite run started for demo.');
+      if (action === 'add-data-row') showToast('Data row editor opened for demo.');
+      if (action === 'import-csv') showToast('CSV import opened for demo.');
+      if (action === 'generate-data') showToast('AI test data generated for demo.');
+      if (action === 'new-script') showToast('New script editor opened for demo.');
+      if (action === 'save-script') showToast('Script saved for demo.');
+      if (action === 'run-script') showToast('Script run started for demo.');
+      if (action === 'open-linked-test-case') showToast('Linked test case opened for demo.');
+      if (action === 'save-mapping') showToast('Data mapping saved for demo.');
+      if (action === 'create-test-run') showToast('Test run creation opened for demo.');
+      if (action === 'create-jira-bug') showToast('Jira bug created for demo.');
+      if (action === 'sync-results-jira') showToast('Results synced to Jira for demo.');
+      if (action === 'download-report') showToast('Report downloaded for demo.');
+      if (action === 'export-pdf') showToast('PDF export generated for demo.');
+      if (action === 'export-excel') showToast('Excel export generated for demo.');
+      if (action === 'sync-project-settings') showToast('Project settings synced for demo.');
     });
 
     qs('#modalBackdrop')?.addEventListener('click', event => {
