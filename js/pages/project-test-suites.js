@@ -120,7 +120,7 @@ function suiteMetric(colorClass, label, value) {
 
 function suiteCard(suite) {
   return `
-    <article class="rounded-xl border bg-white p-5 shadow-card ${suite.active ? 'border-brand-500 ring-1 ring-brand-500' : 'border-slate-200'}">
+    <article onclick="window.openSuiteDetail()" class="cursor-pointer transition-colors hover:border-brand-300 rounded-xl border bg-white p-5 shadow-card ${suite.active ? 'border-brand-500 ring-1 ring-brand-500' : 'border-slate-200'}">
       <div class="flex items-start justify-between gap-4">
         <div class="flex min-w-0 items-start gap-4">
           <div class="grid h-14 w-14 shrink-0 place-items-center rounded-xl text-2xl ${suite.iconTone}">
@@ -144,17 +144,17 @@ function suiteCard(suite) {
         ${statusBadge(suite.status)}
       </div>
 
-      <div class="mt-5 grid grid-cols-3 gap-3 border-y border-slate-200 py-4">
+      <div class="mt-5 border-y border-slate-200 py-4" style="display: flex; justify-content: space-between; text-align: center; gap: 8px;">
         ${suiteMetric('text-emerald-500', 'Passed', suite.passed)}
         ${suiteMetric('text-red-500', 'Failed', suite.failed)}
         ${suiteMetric(suite.status === 'Not Run' ? 'text-emerald-300' : 'text-slate-300', 'Not Run', suite.notRun)}
       </div>
 
-      <div class="mt-5 grid grid-cols-2 gap-4">
-        <button data-action="run-suite" class="inline-flex items-center justify-center gap-3 rounded-lg border border-brand-200 bg-brand-50 px-4 py-3 text-sm font-extrabold text-brand-600 hover:bg-brand-100">
+      <div class="mt-5" style="display: flex; gap: 12px;">
+        <button data-action="run-suite" class="rounded-lg border border-brand-200 bg-brand-50 px-4 py-3 text-sm font-extrabold text-brand-600 hover:bg-brand-100" style="flex: 1; display: flex; justify-content: center; align-items: center; gap: 12px; white-space: nowrap;">
           <i class="fa-solid fa-play"></i> Run Suite
         </button>
-        <button data-action="edit-suite" class="inline-flex items-center justify-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-ink hover:border-brand-200">
+        <button data-action="edit-suite" class="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-ink hover:border-brand-200" style="flex: 1; display: flex; justify-content: center; align-items: center; gap: 12px; white-space: nowrap;">
           <i class="fa-solid fa-pencil"></i> Edit
         </button>
       </div>
@@ -196,8 +196,8 @@ function selectField(label, icon, value, iconExtra = '') {
 
 function renderTestSuites() {
   App.qs('#pageContent').innerHTML = `
-    <div class="grid min-h-[calc(100vh-73px)] bg-white xl:grid-cols-[minmax(0,1fr)_430px]">
-      <section class="min-w-0 border-r border-slate-200 bg-white px-4 py-6 sm:px-6 lg:px-10">
+    <div>
+      <section class="min-w-0 bg-white px-4 py-6 sm:px-6 lg:px-10">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <h1 class="text-3xl font-extrabold text-ink">Test Suites</h1>
           <button data-action="create-suite" class="inline-flex items-center justify-center gap-3 rounded-lg bg-brand-600 px-6 py-3.5 font-bold text-white shadow-lg shadow-blue-600/20 hover:bg-brand-700">
@@ -219,7 +219,7 @@ function renderTestSuites() {
           </div>
         </div>
 
-        <div class="mt-7 grid gap-5 2xl:grid-cols-3 lg:grid-cols-2">
+        <div class="mt-7" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; align-items: start;">
           ${testSuites.map(suiteCard).join('')}
         </div>
 
@@ -233,7 +233,9 @@ function renderTestSuites() {
         </div>
       </section>
 
-      <aside class="bg-white">
+      <div id="suiteBackdrop" onclick="window.closeSuiteDetail()" style="position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1040; display: none; opacity: 0; transition: opacity 0.3s ease;"></div>
+
+      <aside id="suiteDrawer" style="position: fixed; top: 0; right: 0; width: 400px; height: 100vh; z-index: 1050; background: #fff; box-shadow: -5px 0 25px rgba(0,0,0,0.1); transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto;">
         <div class="border-b border-slate-200 p-6">
           <div class="flex items-start justify-between gap-4">
             <div class="flex min-w-0 items-center gap-5">
@@ -247,7 +249,7 @@ function renderTestSuites() {
                 </p>
               </div>
             </div>
-            <button class="grid h-9 w-9 place-items-center rounded-lg text-ink hover:bg-slate-100">
+            <button onclick="window.closeSuiteDetail()" class="grid h-9 w-9 place-items-center rounded-lg text-ink hover:bg-slate-100">
               <i class="fa-solid fa-xmark text-xl"></i>
             </button>
           </div>
@@ -279,6 +281,30 @@ function renderTestSuites() {
     </div>
   `;
 }
+
+window.openSuiteDetail = function() {
+  const drawer = document.getElementById('suiteDrawer');
+  const backdrop = document.getElementById('suiteBackdrop');
+  if (drawer && backdrop) {
+    backdrop.style.display = 'block';
+    setTimeout(() => {
+      backdrop.style.opacity = '1';
+      drawer.style.transform = 'translateX(0)';
+    }, 10);
+  }
+};
+
+window.closeSuiteDetail = function() {
+  const drawer = document.getElementById('suiteDrawer');
+  const backdrop = document.getElementById('suiteBackdrop');
+  if (drawer && backdrop) {
+    drawer.style.transform = 'translateX(100%)';
+    backdrop.style.opacity = '0';
+    setTimeout(() => {
+      backdrop.style.display = 'none';
+    }, 300);
+  }
+};
 
 ProjectLayout.render('project-test-suites');
 App.bindGlobalActions();

@@ -41,31 +41,9 @@ const loginRows = [
 
 function dataFilter(label, active = false) {
   return `
-    <button class="rounded-lg border px-4 py-2.5 text-sm font-bold ${active ? 'border-violet-100 bg-violet-50 text-indigo-600' : 'border-slate-200 bg-white text-slate-600 hover:border-brand-200'}">
+    <button class="shrink-0 whitespace-nowrap rounded-lg border px-4 py-2.5 text-sm font-bold ${active ? 'border-violet-100 bg-violet-50 text-indigo-600' : 'border-slate-200 bg-white text-slate-600 hover:border-brand-200'}">
       ${label}
     </button>
-  `;
-}
-
-function dataSetCard(dataSet) {
-  return `
-    <article class="rounded-xl border bg-white p-5 ${dataSet.active ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-slate-200'}">
-      <div class="flex items-center gap-4">
-        <div class="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-violet-50 text-xl text-indigo-600">
-          <i class="${dataSet.icon}"></i>
-        </div>
-        <div class="min-w-0 flex-1">
-          <h2 class="truncate font-extrabold ${dataSet.active ? 'text-indigo-600' : 'text-ink'}">${dataSet.name}</h2>
-          <p class="mt-2 truncate text-sm font-semibold text-slate-600">
-            ${dataSet.format} <span class="mx-2 text-slate-400">•</span> ${dataSet.count} <span class="mx-2 text-slate-400">•</span> ${dataSet.usage}
-          </p>
-        </div>
-        ${dataSet.active
-          ? '<div class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-indigo-600 text-white"><i class="fa-solid fa-check"></i></div>'
-          : '<button class="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-ink hover:bg-slate-100"><i class="fa-solid fa-ellipsis-vertical"></i></button>'
-        }
-      </div>
-    </article>
   `;
 }
 
@@ -86,44 +64,58 @@ function dataTableRow(row) {
   `;
 }
 
-function renderProjectTestData() {
-  App.qs('#pageContent').innerHTML = `
-    <section class="grid gap-5 xl:grid-cols-[430px_minmax(0,1fr)]">
-      <aside class="card p-5">
-        <h1 class="text-2xl font-extrabold text-ink">Test Data</h1>
+function renderMasterView() {
+  return `
+    <div id="dataListView" class="space-y-6">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <h1 class="text-3xl font-extrabold text-ink">Test Data</h1>
+        <button class="inline-flex items-center justify-center gap-3 rounded-lg bg-indigo-600 px-6 py-3.5 font-bold text-white shadow-lg shadow-indigo-600/20 hover:bg-indigo-700">
+          <i class="fa-solid fa-plus"></i> Create Data Set
+        </button>
+      </div>
 
-        <div class="mt-7 flex gap-3">
-          <label class="relative block min-w-0 flex-1">
-            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-            <input class="w-full rounded-lg border border-slate-200 bg-white py-3.5 pl-11 pr-4 text-sm font-semibold outline-none focus:border-brand-500" placeholder="Search data sets...">
-          </label>
-          <button class="grid h-12 w-12 shrink-0 place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:border-brand-200">
-            <i class="fa-solid fa-filter"></i>
-          </button>
-        </div>
-
-        <div class="mt-5 flex flex-wrap gap-3">
+      <div class="flex flex-col gap-4 xl:flex-row xl:items-center">
+        <label class="relative block w-full xl:max-w-[300px]">
+          <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input class="w-full rounded-xl border border-slate-200 bg-white py-3.5 pl-12 pr-4 text-sm font-semibold outline-none focus:border-brand-500" placeholder="Search data sets...">
+        </label>
+        <div class="hide-scrollbar flex flex-wrap gap-3 overflow-x-auto pb-1" style="flex-wrap: nowrap;">
           ${dataFilter('All', true)}
           ${dataFilter('CSV')}
           ${dataFilter('JSON')}
           ${dataFilter('AI Generated')}
         </div>
+      </div>
 
-        <div class="mt-7 space-y-5">
-          ${testDataSets.map(dataSetCard).join('')}
-        </div>
+      <div class="grid gap-5" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); align-items: start;">
+        ${testDataSets.map(dataSet => `
+          <article onclick="window.showDataDetail()" class="cursor-pointer transition-colors hover:border-indigo-300 rounded-xl border bg-white p-5 shadow-card ${dataSet.active ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-slate-200'}">
+            <div class="flex items-center gap-4">
+              <div class="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-violet-50 text-xl text-indigo-600">
+                <i class="${dataSet.icon}"></i>
+              </div>
+              <div style="flex: 1; min-width: 0;">
+                <h2 class="truncate font-extrabold text-ink">${dataSet.name}</h2>
+                <p class="mt-2 truncate text-sm font-semibold text-slate-600">
+                  ${dataSet.format} <span class="mx-2 text-slate-400">•</span> ${dataSet.count} <span class="mx-2 text-slate-400">•</span> ${dataSet.usage}
+                </p>
+              </div>
+            </div>
+          </article>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
 
-        <div class="mt-28 flex items-center justify-between text-sm font-semibold text-slate-600">
-          <p>Showing 1 - 4 of 4</p>
-          <div class="flex items-center gap-3">
-            <button class="grid h-11 w-11 place-items-center rounded-lg border border-slate-200 bg-white text-slate-500"><i class="fa-solid fa-chevron-left"></i></button>
-            <button class="grid h-11 w-11 place-items-center rounded-lg bg-indigo-600 font-extrabold text-white shadow-lg shadow-indigo-600/20">1</button>
-            <button class="grid h-11 w-11 place-items-center rounded-lg border border-slate-200 bg-white text-slate-500"><i class="fa-solid fa-chevron-right"></i></button>
-          </div>
-        </div>
-      </aside>
+function renderDetailView() {
+  return `
+    <div id="dataDetailView" class="space-y-6" style="display: none;">
+      <button onclick="window.showDataList()" class="inline-flex items-center gap-2 font-bold text-slate-500 hover:text-indigo-600">
+        <i class="fa-solid fa-arrow-left"></i> Back to All Data Sets
+      </button>
 
-      <article class="card overflow-hidden">
+      <article class="card">
         <div class="flex flex-col gap-5 border-b border-slate-200 p-6 lg:flex-row lg:items-center lg:justify-between">
           <div class="flex items-center gap-5">
             <div class="grid h-16 w-16 place-items-center rounded-xl bg-violet-50 text-3xl text-indigo-600">
@@ -134,15 +126,15 @@ function renderProjectTestData() {
               <p class="mt-2 text-lg font-semibold text-slate-600">Used by 5 test cases</p>
             </div>
           </div>
-          <div class="flex flex-col gap-3 sm:flex-row">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: nowrap;">
             <button data-action="add-data-row" class="inline-flex items-center justify-center gap-3 rounded-lg border border-indigo-200 bg-white px-5 py-3 font-extrabold text-indigo-600 hover:bg-violet-50">
               <i class="fa-solid fa-plus"></i> Add Row
             </button>
             <button data-action="import-csv" class="inline-flex items-center justify-center gap-3 rounded-lg border border-indigo-200 bg-white px-5 py-3 font-extrabold text-indigo-600 hover:bg-violet-50">
               <i class="fa-solid fa-arrow-up-from-bracket"></i> Import CSV
             </button>
-            <button data-action="generate-data" class="inline-flex items-center justify-center gap-3 rounded-lg bg-indigo-600 px-5 py-3 font-extrabold text-white shadow-lg shadow-indigo-600/20 hover:bg-indigo-700">
-              <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Generate Data with AI
+            <button data-action="generate-data" class="inline-flex items-center justify-center gap-3 rounded-lg bg-indigo-600 px-5 py-3 font-extrabold text-white shadow-lg shadow-indigo-600/20 hover:bg-indigo-700" style="white-space: nowrap;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> ✨ Auto-Generate AI
             </button>
           </div>
         </div>
@@ -154,8 +146,8 @@ function renderProjectTestData() {
               Structured test data for login flows and suite execution.
             </div>
             <div class="grid grid-cols-2 gap-3 rounded-xl border border-slate-200 bg-white p-3">
-              <button class="rounded-lg bg-violet-50 px-4 py-3 font-extrabold text-indigo-600">Table View</button>
-              <button class="rounded-lg bg-slate-50 px-4 py-3 font-extrabold text-slate-600">JSON View</button>
+              <button onclick="document.getElementById('tableView').style.display='block'; document.getElementById('jsonView').style.display='none';" class="rounded-lg bg-violet-50 px-4 py-3 font-extrabold text-indigo-600 hover:bg-violet-100">Table View</button>
+              <button onclick="document.getElementById('tableView').style.display='none'; document.getElementById('jsonView').style.display='block';" class="rounded-lg bg-slate-50 px-4 py-3 font-extrabold text-slate-600 hover:bg-slate-100">JSON View</button>
             </div>
           </div>
 
@@ -164,9 +156,9 @@ function renderProjectTestData() {
             <span>AI can generate happy paths, edge cases, negative cases, and security-focused rows based on this schema.</span>
           </p>
 
-          <div class="mt-6 overflow-hidden rounded-xl border border-slate-200">
-            <div class="overflow-x-auto">
-              <table class="min-w-full text-left">
+          <div id="tableView" class="mt-6 overflow-hidden rounded-xl border border-slate-200">
+            <div class="table-responsive" style="width: 100%; overflow-x: auto;">
+              <table class="w-full text-left" style="min-width: 600px;">
                 <thead class="bg-white">
                   <tr>
                     <th class="w-12 px-4 py-5 text-center">
@@ -186,6 +178,25 @@ function renderProjectTestData() {
             </div>
           </div>
 
+          <div id="jsonView" style="display: none;" class="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-[#1e1e1e] p-5">
+            <pre class="text-sm text-emerald-400 font-mono overflow-x-auto"><code>[
+  {
+    "id": "1",
+    "email": "jane.doe@example.com",
+    "password": "ValidPass@123",
+    "expected_status": "success",
+    "role": "user"
+  },
+  {
+    "id": "2",
+    "email": "admin@example.com",
+    "password": "AdminPass@456",
+    "expected_status": "success",
+    "role": "admin"
+  }
+]</code></pre>
+          </div>
+
           <div class="mt-7 border-t border-slate-200 pt-6">
             <p class="flex items-center gap-3 text-sm font-semibold text-slate-600">
               <i class="fa-regular fa-circle-check text-lg text-emerald-600"></i>
@@ -196,9 +207,23 @@ function renderProjectTestData() {
           </div>
         </div>
       </article>
-    </section>
+    </div>
   `;
 }
+
+function renderProjectTestData() {
+  App.qs('#pageContent').innerHTML = renderMasterView() + renderDetailView();
+}
+
+window.showDataDetail = function() {
+  document.getElementById('dataListView').style.display = 'none';
+  document.getElementById('dataDetailView').style.display = 'block';
+};
+
+window.showDataList = function() {
+  document.getElementById('dataDetailView').style.display = 'none';
+  document.getElementById('dataListView').style.display = 'block';
+};
 
 ProjectLayout.render('project-test-data');
 App.bindGlobalActions();

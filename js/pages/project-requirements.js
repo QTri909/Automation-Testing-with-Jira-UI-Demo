@@ -21,7 +21,7 @@ function requirementRow(req) {
   const statusTone = req.status === 'Synced' ? 'text-emerald-600' : req.status === 'Warning' ? 'text-amber-500' : 'text-brand-600';
   const coverageTone = req.coverageTone || 'bg-emerald-500';
   return `
-    <tr class="${req.active ? 'rounded-lg outline outline-1 outline-brand-200' : 'border-t border-slate-200'}">
+    <tr onclick="window.openRequirementDetail()" class="cursor-pointer hover:bg-slate-50 transition-colors ${req.active ? 'rounded-lg outline outline-1 outline-brand-200' : 'border-t border-slate-200'}">
       <td class="px-5 py-5 font-medium text-slate-600">${req.id}</td>
       <td class="px-5 py-5 font-extrabold text-brand-600">${req.issue} <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i></td>
       <td class="px-5 py-5 font-medium text-ink">${req.title}</td>
@@ -67,7 +67,7 @@ function renderProjectRequirements() {
   ];
 
   App.qs('#pageContent').innerHTML = `
-    <div class="grid gap-6 xl:grid-cols-[1fr_400px]">
+    <div>
       <section class="min-w-0 space-y-6">
         <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
           <div>
@@ -136,7 +136,9 @@ function renderProjectRequirements() {
         </div>
       </section>
 
-      <aside class="card h-fit p-6">
+      <div id="requirementBackdrop" onclick="window.closeRequirementDetail()" style="position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1040; display: none; opacity: 0; transition: opacity 0.3s;"></div>
+
+      <aside id="requirementDrawer" class="p-6" style="position: fixed; top: 0; right: 0; width: 400px; height: 100vh; z-index: 1050; background-color: #ffffff; box-shadow: -5px 0 25px rgba(0,0,0,0.1); transform: translateX(100%); transition: transform 0.3s ease-in-out; overflow-y: auto;">
         <div class="flex items-start justify-between gap-4">
           <div class="flex gap-4">
             <div class="grid h-14 w-14 place-items-center rounded-lg bg-blue-50 text-2xl text-brand-600">
@@ -147,7 +149,7 @@ function renderProjectRequirements() {
               <p class="mt-2 text-sm text-slate-500">Jira Issue: <strong class="text-brand-600">ATP-12</strong> <i class="fa-solid fa-arrow-up-right-from-square text-brand-600"></i></p>
             </div>
           </div>
-          <button class="text-2xl text-slate-500"><i class="fa-solid fa-xmark"></i></button>
+          <button onclick="window.closeRequirementDetail()" class="text-2xl text-slate-500 hover:text-ink"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <p class="mt-6 border-b border-slate-200 pb-6 leading-7 text-slate-600">Users should be able to log in to the system using a valid email address and password to access their account.</p>
 
@@ -189,6 +191,30 @@ function renderProjectRequirements() {
     </div>
   `;
 }
+
+window.openRequirementDetail = function() {
+  const drawer = document.getElementById('requirementDrawer');
+  const backdrop = document.getElementById('requirementBackdrop');
+  if (drawer && backdrop) {
+    backdrop.style.display = 'block';
+    setTimeout(() => {
+      backdrop.style.opacity = '1';
+      drawer.style.transform = 'translateX(0)';
+    }, 10);
+  }
+};
+
+window.closeRequirementDetail = function() {
+  const drawer = document.getElementById('requirementDrawer');
+  const backdrop = document.getElementById('requirementBackdrop');
+  if (drawer && backdrop) {
+    drawer.style.transform = 'translateX(100%)';
+    backdrop.style.opacity = '0';
+    setTimeout(() => {
+      backdrop.style.display = 'none';
+    }, 300);
+  }
+};
 
 ProjectLayout.render('project-requirements');
 App.bindGlobalActions();

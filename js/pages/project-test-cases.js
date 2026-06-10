@@ -87,8 +87,8 @@ function renderProjectTestCases() {
       </div>
     </section>
 
-    <section class="grid gap-5 xl:grid-cols-[390px_1fr]">
-      <aside class="card p-4">
+    <section style="display: flex; gap: 24px; align-items: flex-start;" class="flex-col xl:flex-row">
+      <aside class="card p-4 w-full xl:w-auto" style="width: 320px; flex-shrink: 0;">
         <div class="flex gap-3">
           <label class="relative block flex-1">
             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
@@ -123,11 +123,11 @@ function renderProjectTestCases() {
         </div>
       </aside>
 
-      <article class="card p-6">
+      <article class="card p-6" style="flex: 1; min-width: 0;">
         <div class="border-b border-slate-200 pb-5">
           <h2 class="text-xl font-extrabold text-ink"><span class="text-brand-600">TC-001</span> <span class="ml-4">Verify login with valid credentials</span></h2>
         </div>
-        <div class="mt-6 grid gap-5 lg:grid-cols-5">
+        <div class="mt-6" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px; align-items: start;">
           ${metaItem('fa-regular fa-file-lines', 'Linked Requirement', 'ATP-12 - Login with email and password')}
           ${metaItem('fa-solid fa-list-check', 'Covered AC', 'AC-1')}
           ${metaItem('fa-solid fa-arrow-up', 'Priority', 'High', 'text-ink')}
