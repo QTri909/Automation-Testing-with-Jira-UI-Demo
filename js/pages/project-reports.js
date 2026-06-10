@@ -46,9 +46,9 @@ function donutPanel(title, center, sub, legend, gradient) {
   return `
     <article class="card p-5">
       <h2 class="font-extrabold text-ink">${title} <i class="fa-regular fa-circle-question text-slate-400"></i></h2>
-      <div class="mt-6 flex items-center justify-center gap-8">
-        <div class="grid h-36 w-36 place-items-center rounded-full" style="background:${gradient};">
-          <div class="grid h-24 w-24 place-items-center rounded-full bg-white text-center">
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-6">
+        <div class="grid shrink-0 place-items-center rounded-full" style="background:${gradient}; width: 140px; height: 140px; aspect-ratio: 1 / 1;">
+          <div class="grid h-[100px] w-[100px] place-items-center rounded-full bg-white text-center">
             <p class="text-3xl font-extrabold text-ink">${center}</p>
             <p class="text-sm font-semibold text-slate-500">${sub}</p>
           </div>
@@ -145,7 +145,7 @@ function exportItem(item) {
 
 function renderProjectReports() {
   App.qs('#pageContent').innerHTML = `
-    <section class="space-y-5">
+    <section class="space-y-5 overflow-x-hidden">
       <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <h1 class="text-4xl font-extrabold text-ink">Reports</h1>
         <div class="flex flex-col gap-3 sm:flex-row">
@@ -165,7 +165,7 @@ function renderProjectReports() {
         ${reportMetric('fa-solid fa-code', 'bg-emerald-50', 'text-emerald-600', 'Automation Progress', '74%', '7.3%')}
       </div>
 
-      <div class="grid gap-5 lg:grid-cols-2 2xl:grid-cols-4">
+      <div class="grid gap-5" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
         ${requirementCoveragePanel()}
         ${donutPanel('Test Execution Pass Rate', '84%', 'Pass Rate', `
           ${legendRow('text-emerald-500', 'Passed', '210')}
@@ -177,11 +177,10 @@ function renderProjectReports() {
           ${legendRow('text-brand-600', 'Resolved', '12')}
           ${legendRow('text-indigo-600', 'Critical', '2')}
         `, 'conic-gradient(#2357df 0 52%, #16a05d 52% 78%, #f43f5e 78% 100%)')}
-        ${gaugePanel('Automation Progress', '74%', '184 / 248')}
       </div>
 
-      <div class="grid gap-5 2xl:grid-cols-[1.4fr_1fr]">
-        <article class="card p-5">
+      <div class="flex flex-wrap gap-6 w-full box-border">
+        <article class="card p-5" style="flex: 2; min-width: 0; overflow-x: auto;">
           <h2 class="text-lg font-extrabold text-ink">Requirement &rarr; AC &rarr; Test Case Coverage <i class="fa-regular fa-circle-question text-slate-400"></i></h2>
           <div class="mt-5 overflow-hidden rounded-xl border border-slate-200">
             <div class="overflow-x-auto">
@@ -204,7 +203,7 @@ function renderProjectReports() {
           <button class="mt-5 flex w-full items-center justify-center gap-3 font-extrabold text-brand-600">View Full Coverage Matrix <i class="fa-solid fa-chevron-right"></i></button>
         </article>
 
-        <article class="card p-5">
+        <article class="card p-5" style="flex: 1; min-width: 300px;">
           <div class="flex items-center justify-between gap-4">
             <h2 class="text-lg font-extrabold text-ink">Recent Exports <i class="fa-regular fa-circle-question text-slate-400"></i></h2>
             <button class="font-extrabold text-brand-600">View All Exports</button>
